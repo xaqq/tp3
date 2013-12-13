@@ -41,6 +41,11 @@ public class SocietyHandler : MonoBehaviour {
 		print ("I AM SOCIETY " + SocietyNumber.ToString() + " AND I HAVE " + NumberOfResources.ToString() + " RESOURCES");
 	}
 	
+	public void AgentDead()
+	{
+		NumberOfAgent--;
+	}
+	
 	// Update is called once per frame
 	void Update () {
 	

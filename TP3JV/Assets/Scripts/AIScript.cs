@@ -1,19 +1,20 @@
 ﻿using UnityEngine;
 using System.Collections;
 
-public enum Commands {MOVE, MOVETORESSOURCE, COLLECT};
+public enum Commands {MOVE, MOVETORESSOURCE, COLLECT, ATTACK, CHASE};
 
 public class AIScript : MonoBehaviour {
 	
-	private Commands CurrentCommand;
-	private SocietyHandler MySociety;
-	private AICommand CurrObject;
+	protected Commands CurrentCommand;
+	protected SocietyHandler MySociety;
+	protected AICommand CurrObject;
 	protected Transform Target;
 	private int Level = 1;
 	private int Experience = 0;
 	public int Health = 100;
 	public int MinPos;
 	public int MaxPos;
+	
 	
 	private int RessourceQuantity = 0;
 	
@@ -35,6 +36,11 @@ public class AIScript : MonoBehaviour {
 	public int GetHealth()
 	{
 		return Health;
+	}
+	
+	public void SetHealth(int h)
+	{
+		Health = h;
 	}
 	
 	public int GetLevel()
@@ -108,6 +114,13 @@ public class AIScript : MonoBehaviour {
 	
 	// Update is called once per frame
 	void Update () {
+		if (this.GetHealth() <= 0)
+		{
+			print ("Im dead :(");
+			Destroy(this.gameObject);
+			MySociety.AgentDead();
+			return;
+		}
 		if (this.gameObject.GetComponent("AICommand") != null)
 		{
 			CurrObject = this.gameObject.GetComponent<AICommand>();
@@ -165,7 +178,7 @@ public class AIScript : MonoBehaviour {
 		}
 		else
 		{
-			print("PAS UNE RESSOURCE");
+			//print("PAS UNE RESSOURCE");
 		}
 	}
 }
