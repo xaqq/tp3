@@ -21,14 +21,13 @@ public class TriggerScript : MonoBehaviour {
 			Agent.SwitchTo(Commands.MOVETORESSOURCE);
 			Agent.SetTarget(target.transform);
 			print (target.transform.position);
-			print("ESH");
 		}
     }
 	
 	void OnTriggerExit(Collider target) {
 		if (target.CompareTag("Ressource"))
 		{
-			print("ESHLEFT");
+			print("Not in range anymore");
 		}
     }
 }

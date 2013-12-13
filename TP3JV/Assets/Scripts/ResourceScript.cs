@@ -28,7 +28,7 @@ public class ResourceScript : MonoBehaviour
 		System.Random rdn = new System.Random();
 		Vector3 _randomPos = new Vector3(0,0.5f,0);
 		
-		_newResource = (GameObject)GameObject.Instantiate(Resources.Load("Prefabs/Sphere"));
+		_newResource = (GameObject)GameObject.Instantiate(Resources.Load("Prefabs/Resource1"));
 		_randomPos.x = rdn.Next (-50, 50);
 		_randomPos.z = rdn.Next (-50, 50);
 		_randomPos.y = 0.5f;

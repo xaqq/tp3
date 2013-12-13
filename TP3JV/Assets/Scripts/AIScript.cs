@@ -6,6 +6,7 @@ public enum Commands {MOVE, MOVETORESSOURCE, COLLECT};
 public class AIScript : MonoBehaviour {
 	
 	private Commands CurrentCommand;
+	private SocietyHandler MySociety;
 	private AICommand CurrObject;
 	protected Transform Target;
 	private int Level = 1;
@@ -21,6 +22,15 @@ public class AIScript : MonoBehaviour {
 		CurrentCommand = Commands.MOVE;
 	}
 	
+	public SocietyHandler GetSociety()
+	{
+		return MySociety;
+	}
+	public void SetSociety(SocietyHandler _society)
+	{
+		print (_society.gameObject.name);
+		MySociety = _society;
+	}
 	
 	public int GetHealth()
 	{
@@ -124,6 +134,7 @@ public class AIScript : MonoBehaviour {
 	public void AddRessource(int qt)
 	{
 		RessourceQuantity += qt;
+		MySociety.AddResources(qt);
 	}
 	
 	
