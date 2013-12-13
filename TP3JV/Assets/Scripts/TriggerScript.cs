@@ -16,7 +16,7 @@ public class TriggerScript : MonoBehaviour {
 	}
 	
 	void OnTriggerEnter(Collider target) {
-		if (target.tag == "Ressource")
+		if (target.CompareTag("Ressource"))
 		{
 			Agent.SwitchTo(Commands.MOVETORESSOURCE);
 			Agent.SetTarget(target.transform);
@@ -26,7 +26,7 @@ public class TriggerScript : MonoBehaviour {
     }
 	
 	void OnTriggerExit(Collider target) {
-		if (target.tag == "Ressource")
+		if (target.CompareTag("Ressource"))
 		{
 			print("ESHLEFT");
 		}

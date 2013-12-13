@@ -3,7 +3,7 @@ using System.Collections;
 
 public class GameScript : MonoBehaviour {
 	public int PointToVictory = 50;
-	private bool over = false;
+	private bool Over = false;
 	// Use this for initialization
 	void Start () {
 	
@@ -11,7 +11,7 @@ public class GameScript : MonoBehaviour {
 	
 	void win(int team)
 	{
-		over = true;
+		Over = true;
 		print ("Team " + team + " won !");
 	}
 	
@@ -23,13 +23,13 @@ public class GameScript : MonoBehaviour {
 		{
 		AIScript ai = unit.GetComponent<AIScript>();
 			if (ai)
-			res_fct1 += ai.GetResourceQuantity(); 
+			res_fct1 += ai.GetRessourceQuantity(); 
 		}
 				foreach (GameObject unit in GameObject.FindGameObjectsWithTag("Faction_2"))
 		{
 		AIScript ai = unit.GetComponent<AIScript>();
 			if (ai)
-			res_fct2 += ai.GetResourceQuantity(); 
+			res_fct2 += ai.GetRessourceQuantity(); 
 		}
 		
 		if (res_fct1 > PointToVictory && res_fct2 > PointToVictory)

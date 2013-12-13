@@ -1,43 +1,49 @@
 ﻿using UnityEngine;
 using System.Collections;
 
-public class ResourceScript : AIScript {
+public class ResourceScript : MonoBehaviour
+{
+	public int Quantity = 1;
 	
-	private int quantity_;
-	
-	public int collect(int qt)
+	public int collect (int qt)
 	{
-		print ("Has " + quantity_ + " available");
-		  if (qt < quantity_)
-    {
-      quantity_ -= qt;
-      return qt;
-    }
-  qt = quantity_;
-  quantity_ = 0;
+		print ("Has " + Quantity + " available");
+		if (qt < Quantity) {
+			Quantity -= qt;
+			return qt;
+		}
+		qt = Quantity;
+		Quantity = 0;
 		return qt;
 	}
 	
 	// Use this for initialization
-	void Start () {
-		quantity_ = 95;
+	void Start ()
+	{
 	}
 	
-	
-	void SpawnNewResource()
+	void SpawnNewResource ()
 	{
-		// how ??
+		GameObject _newResource;
+		System.Random rdn = new System.Random();
+		Vector3 _randomPos = new Vector3(0,0.5f,0);
+		
+		_newResource = (GameObject)GameObject.Instantiate(Resources.Load("Prefabs/Sphere"));
+		_randomPos.x = rdn.Next (-50, 50);
+		_randomPos.z = rdn.Next (-50, 50);
+		_randomPos.y = 0.5f;
+		_newResource.transform.position = _randomPos;
 	}
 	
 	// Update is called once per frame
-	void Update () {
-		if (quantity_ == 0)
-		{
+	void Update ()
+	{
+		if (Quantity == 0) {
 			print ("Im a dead resource");
 			
-			SpawnNewResource();
+			SpawnNewResource ();
 			
-			Destroy(this.gameObject);
+			Destroy (this.gameObject);
 		}
 	}
 }

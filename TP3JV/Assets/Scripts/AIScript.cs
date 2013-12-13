@@ -8,11 +8,13 @@ public class AIScript : MonoBehaviour {
 	private Commands CurrentCommand;
 	private AICommand CurrObject;
 	protected Transform Target;
-	private int level_ = 1;
-	private int experience_ = 0;
-	public int health_ = 100;
+	private int Level = 1;
+	private int Experience = 0;
+	public int Health = 100;
+	public int MinPos;
+	public int MaxPos;
 	
-	private int resourceQuantity_ = 0;
+	private int RessourceQuantity = 0;
 	
 	// Use this for initialization
 	void Start () {
@@ -22,30 +24,30 @@ public class AIScript : MonoBehaviour {
 	
 	public int GetHealth()
 	{
-		return health_;
+		return Health;
 	}
 	
 	public int GetLevel()
 	{
-		return level_;
+		return Level;
 	}
 	
 	public void AddLevel(int l)
 	{
-		level_ += l;
+		Level += l;
 	}
 	
 	public int GetExperience()
 	{
-		return experience_;
+		return Experience;
 	}
 	
 	public void AddExperience(int qt)
 	{
-		experience_ += qt;
+		Experience += qt;
 		
-		if ((level_ == 1 && experience_ > 50) ||
-			(level_ == 2 && experience_ > 150))
+		if ((Level == 1 && Experience > 50) ||
+			(Level == 2 && Experience > 150))
 			AddLevel(1);
 	}
 	
@@ -59,6 +61,14 @@ public class AIScript : MonoBehaviour {
 				this.gameObject.AddComponent("AICommand_MoveTo");
 				CurrObject = this.gameObject.GetComponent<AICommand>();
 				Vector3 tmp = (Random.insideUnitSphere * 3) + this.transform.position;
+				if (tmp.x > MaxPos)
+					tmp.x = MaxPos;
+				else if (tmp.x < MinPos)
+					tmp.x = MinPos;
+				if (tmp.z > MaxPos)
+					tmp.z = MaxPos;
+				else if (tmp.z < MinPos)
+					tmp.z = MinPos;
 				tmp.y = this.transform.position.y;
 				CurrObject.StartExecute(tmp);
 			}
@@ -74,9 +84,12 @@ public class AIScript : MonoBehaviour {
 			}
 			break;
 		case Commands.COLLECT:
-			this.gameObject.AddComponent("AICommand_Collect");			
-			CurrObject = this.gameObject.GetComponent<AICommand>();
-			CurrObject.StartExecute(new Vector3());
+			if (this.gameObject.GetComponent("AICommand") == null)
+			{
+				this.gameObject.AddComponent("AICommand_Collect");			
+				CurrObject = this.gameObject.GetComponent<AICommand>();
+				CurrObject.StartExecute(new Vector3());
+			}
 			break;
 		default:
 			break;
@@ -103,14 +116,14 @@ public class AIScript : MonoBehaviour {
 		}
 	}
 	
-	public int GetResourceQuantity()
+	public int GetRessourceQuantity()
 	{
-		return resourceQuantity_;
+		return RessourceQuantity;
 	}
 	
 	public void AddRessource(int qt)
 	{
-		resourceQuantity_ += qt;
+		RessourceQuantity += qt;
 	}
 	
 	
@@ -132,5 +145,16 @@ public class AIScript : MonoBehaviour {
 			GameObject.Destroy(CurrObject);
 		}
 		CurrentCommand = _newCommand;
+	}
+	
+	void OnCollisionEnter(Collision collision) {
+		if (collision.gameObject.CompareTag("Ressource"))
+		{
+			SwitchTo (Commands.COLLECT);
+		}
+		else
+		{
+			print("PAS UNE RESSOURCE");
+		}
 	}
 }
