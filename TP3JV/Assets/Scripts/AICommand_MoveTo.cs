@@ -3,6 +3,7 @@ using System.Collections;
 
 public class AICommand_MoveTo : AICommand {
 	
+	private AIScript ai_;
 	private Vector3 TargetPosition;
 	private float Speed = 1.0f;
 	
@@ -10,7 +11,10 @@ public class AICommand_MoveTo : AICommand {
 	
 	public override void StartExecute (Vector3 _position)
 	{
-		TargetPosition = _position;
+		TargetPosition = _position;		
+		ai_ = this.GetComponent<AIScript>();
+		Speed = Speed + Speed * ai_.GetLevel() * 0.5f;
+			
 	}
 	
 	public override void Execute ()

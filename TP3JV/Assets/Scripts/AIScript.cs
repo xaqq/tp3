@@ -7,11 +7,46 @@ public class AIScript : MonoBehaviour {
 	
 	private Commands CurrentCommand;
 	private AICommand CurrObject;
-	private Transform Target;
+	protected Transform Target;
+	private int level_ = 1;
+	private int experience_ = 0;
+	public int health_ = 100;
+	
+	private int resourceQuantity_ = 0;
 	
 	// Use this for initialization
 	void Start () {
 		CurrentCommand = Commands.MOVE;
+	}
+	
+	
+	public int GetHealth()
+	{
+		return health_;
+	}
+	
+	public int GetLevel()
+	{
+		return level_;
+	}
+	
+	public void AddLevel(int l)
+	{
+		level_ += l;
+	}
+	
+	public int GetExperience()
+	{
+		return experience_;
+	}
+	
+	public void AddExperience(int qt)
+	{
+		experience_ += qt;
+		
+		if ((level_ == 1 && experience_ > 50) ||
+			(level_ == 2 && experience_ > 150))
+			AddLevel(1);
 	}
 	
 	void ChoseWhatToDo()
@@ -39,7 +74,9 @@ public class AIScript : MonoBehaviour {
 			}
 			break;
 		case Commands.COLLECT:
-			this.gameObject.AddComponent("AICommand_Collect");
+			this.gameObject.AddComponent("AICommand_Collect");			
+			CurrObject = this.gameObject.GetComponent<AICommand>();
+			CurrObject.StartExecute(new Vector3());
 			break;
 		default:
 			break;
@@ -55,6 +92,8 @@ public class AIScript : MonoBehaviour {
 			{
 				if (CurrentCommand == Commands.MOVETORESSOURCE)
 					CurrentCommand = Commands.COLLECT;
+				else if (CurrentCommand == Commands.COLLECT)
+					CurrentCommand = Commands.MOVE;
 				GameObject.Destroy(CurrObject);
 			}
 		}
@@ -64,9 +103,25 @@ public class AIScript : MonoBehaviour {
 		}
 	}
 	
+	public int GetResourceQuantity()
+	{
+		return resourceQuantity_;
+	}
+	
+	public void AddRessource(int qt)
+	{
+		resourceQuantity_ += qt;
+	}
+	
+	
 	public void SetTarget(Transform _target)
 	{
 		Target = _target;
+	}
+	
+	public Transform GetTarget()
+	{
+		return Target;
 	}
 	
 	public void SwitchTo(Commands _newCommand)
