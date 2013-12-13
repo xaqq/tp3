@@ -34,7 +34,10 @@ public class CameraHandler : MonoBehaviour {
 
 	void UpdatePerspective()
 	{
-		Screen.lockCursor = true;
+		if (Input.GetAxis("Fire2") > 0)
+		{
+			Screen.lockCursor = true;
+		}
 		transform.position = new Vector3(0, Hauteur_Perspective, 0);
 	}
 
@@ -43,14 +46,17 @@ public class CameraHandler : MonoBehaviour {
 		if (Camera_Target != null)
 		{
 			transform.position = Camera_Target.transform.position + new Vector3(0, Hauteur_FirstPerson, 0);
-			transform.Translate(Camera_Target.transform.forward * Offset_FirstPerson);
-			transform.LookAt(Camera_Target.transform.position + Camera_Target.transform.forward);
+			transform.eulerAngles = Camera_Target.transform.eulerAngles;
+			transform.Translate(Vector3.forward * Offset_FirstPerson);
 		}
 	}
 
 	void UpdateThirdPerson()
 	{
-		Screen.lockCursor = true;
+		if (Input.GetAxis("Fire2") > 0)
+		{
+			Screen.lockCursor = true;
+		}
 		if (Camera_Target != null)
 		{
 			transform.position = Camera_Target.transform.position + new Vector3(0, Hauteur_ThirdPerson, 0);
@@ -59,7 +65,7 @@ public class CameraHandler : MonoBehaviour {
 
 	void eventHandling()
 	{
-		if (CameraMode == Camera_Mode.PERSPECTIVE || CameraMode == Camera_Mode.THIRD_PERSON);
+		if ((CameraMode == Camera_Mode.PERSPECTIVE || CameraMode == Camera_Mode.THIRD_PERSON) && Input.GetAxis("Fire2") > 0)
 		{
 			float h = Input.GetAxis("Mouse X");
 			float v = Input.GetAxis("Mouse Y");
