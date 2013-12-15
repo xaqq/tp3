@@ -43,7 +43,7 @@ public class TriggerScript : MonoBehaviour {
 		{
 			print("Not in range anymore");
 		}
-			if (Agent.Attacker == target.GetComponent<SoldierScript>())
+			if (Agent.Attacker && Agent.Attacker == target.GetComponent<SoldierScript>())
 			{
 				Agent.Attacker = null;
 				Agent.SwitchTo(Commands.MOVE);
