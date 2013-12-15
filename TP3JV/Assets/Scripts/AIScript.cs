@@ -52,6 +52,9 @@ public class AIScript : MonoBehaviour {
 	public void AddLevel(int l)
 	{
 		Level += l;
+		if (MySociety)
+			MySociety.UnitLeveledUp(this);
+		print ("Level up !");
 	}
 	
 	public int GetExperience()
@@ -63,8 +66,9 @@ public class AIScript : MonoBehaviour {
 	{
 		Experience += qt;
 		
-		if ((Level == 1 && Experience > 50) ||
-			(Level == 2 && Experience > 150))
+		print ("Current xp = " + Experience);
+		if ((Level == 1 && Experience > 3) ||
+			(Level == 2 && Experience > 10))
 			AddLevel(1);
 	}
 	

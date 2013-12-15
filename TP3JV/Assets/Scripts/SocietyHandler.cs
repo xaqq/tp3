@@ -1,5 +1,5 @@
 ﻿using UnityEngine;
-using System.Collections;
+using System.Collections.Generic;
 
 public class SocietyHandler : MonoBehaviour {
 	
@@ -8,6 +8,9 @@ public class SocietyHandler : MonoBehaviour {
 	private int NumberOfCollisions;
 	private int NumberOfPotentialCollisions;
 	public int SocietyNumber;
+	public int SoldierCountTreshold = 3;
+	
+	private List<AIScript> LevelUpUnits = new List<AIScript>(); // units who level-up prev frame
 	
 	// Use this for initialization
 	void Start () {
@@ -32,6 +35,27 @@ public class SocietyHandler : MonoBehaviour {
 			_tmpScript.SetSociety(this);
 		}
 		
+	}
+	
+	private void CreateAgent()
+	{
+			GameObject _newAgent;
+		AIScript _tmpScript;
+		Vector3 _tmp;
+		
+		    NumberOfAgent++;
+			_newAgent = (GameObject)GameObject.Instantiate(Resources.Load("Prefabs/Agent" + SocietyNumber.ToString()));
+			_tmp = (Random.insideUnitSphere * 25) + this.transform.position;
+			_tmp.y = this.transform.position.y;
+			_newAgent.transform.position = _tmp;
+			_tmpScript = _newAgent.GetComponent<AIScript>();
+			_tmpScript.SetSociety(this);
+	
+	}
+	
+	public void UnitLeveledUp(AIScript unit)
+	{
+		LevelUpUnits.Add(unit);
 	}
 	
 	public int GetNumberOfAgent()
@@ -81,8 +105,48 @@ public class SocietyHandler : MonoBehaviour {
 	}
 	
 	
+	private int countMySoldier()
+	{
+		int count = 0;
+		if (this.gameObject.CompareTag("Faction_1"))
+		{
+			foreach (GameObject o in GameObject.FindGameObjectsWithTag("Faction_1"))
+			{
+				if (o.GetComponent<SoldierScript>())
+					count++;
+			}
+			return count;
+		}
+				if (this.gameObject.CompareTag("Faction_2"))
+		{
+			foreach (GameObject o in GameObject.FindGameObjectsWithTag("Faction_2"))
+			{
+				if (o.GetComponent<SoldierScript>())
+					count++;
+			}
+			return count;
+		}
+		return count;
+	}
+	
 	// Update is called once per frame
 	void Update () {
-	
+		foreach (AIScript u in LevelUpUnits)
+		{
+			if (u.GetLevel() == 2 && countMySoldier() < SoldierCountTreshold)
+			{
+				//  becomes a level 1 soldier
+				AIScript go = u.gameObject.GetComponent<AIScript>();
+			    GameObject.Destroy(go);
+				u.gameObject.AddComponent("SoldierScript");
+				u.GetComponent<AIScript>().SetSociety(this);
+			}
+			else
+			{
+				this.CreateAgent();
+			}
+			
+		}
+		LevelUpUnits.Clear();
 	}
 }
