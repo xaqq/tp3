@@ -81,7 +81,7 @@ public class AIScript : MonoBehaviour {
 			{
 				this.gameObject.AddComponent("AICommand_MoveTo");
 				CurrObject = this.gameObject.GetComponent<AICommand>();
-				Vector3 tmp = (Random.insideUnitSphere * 8) + this.transform.position;
+				Vector3 tmp = (Random.insideUnitSphere * 15) + this.transform.position;
 				if (tmp.x > MaxPos)
 					tmp.x = MaxPos;
 				else if (tmp.x < MinPos)
