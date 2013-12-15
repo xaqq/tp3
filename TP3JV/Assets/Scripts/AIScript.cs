@@ -1,7 +1,7 @@
 ﻿using UnityEngine;
 using System.Collections;
 
-public enum Commands {MOVE, MOVETORESSOURCE, COLLECT, ATTACK, CHASE};
+public enum Commands {MOVE, MOVETORESSOURCE, COLLECT, ATTACK, CHASE, FLEE};
 
 public class AIScript : MonoBehaviour {
 	
@@ -9,6 +9,7 @@ public class AIScript : MonoBehaviour {
 	public SocietyHandler MySociety;
 	protected AICommand CurrObject;
 	protected Transform Target;
+	public SoldierScript Attacker; // Attacker we flee from
 	private int Level = 1;
 	private int Experience = 0;
 	public int Health = 100;
@@ -76,7 +77,7 @@ public class AIScript : MonoBehaviour {
 			{
 				this.gameObject.AddComponent("AICommand_MoveTo");
 				CurrObject = this.gameObject.GetComponent<AICommand>();
-				Vector3 tmp = (Random.insideUnitSphere * 3) + this.transform.position;
+				Vector3 tmp = (Random.insideUnitSphere * 8) + this.transform.position;
 				if (tmp.x > MaxPos)
 					tmp.x = MaxPos;
 				else if (tmp.x < MinPos)
@@ -103,6 +104,14 @@ public class AIScript : MonoBehaviour {
 			if (this.gameObject.GetComponent("AICommand") == null)
 			{
 				this.gameObject.AddComponent("AICommand_Collect");			
+				CurrObject = this.gameObject.GetComponent<AICommand>();
+				CurrObject.StartExecute(new Vector3());
+			}
+			break;
+		case Commands.FLEE:	
+			if (this.gameObject.GetComponent("AICommand") == null)
+			{
+				this.gameObject.AddComponent("AICommand_Flee");			
 				CurrObject = this.gameObject.GetComponent<AICommand>();
 				CurrObject.StartExecute(new Vector3());
 			}
@@ -183,9 +192,12 @@ public class AIScript : MonoBehaviour {
 	}
 	
 	void OnCollisionExit(Collision collision) {
+		if (collision == null || collision.gameObject == null)
+			return;
 		if (collision.gameObject.CompareTag("Faction_1") || collision.gameObject.CompareTag("Faction_2"))
 		{
-			MySociety.RemoveCollision();
+			if (MySociety)
+				MySociety.RemoveCollision();
 		}
 	}
 }

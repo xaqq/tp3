@@ -17,7 +17,7 @@ public class SoldierScript : AIScript {
 			{
 				this.gameObject.AddComponent("AICommand_MoveTo");
 				CurrObject = this.gameObject.GetComponent<AICommand>();
-				Vector3 tmp = (Random.insideUnitSphere * 3) + this.transform.position;
+				Vector3 tmp = (Random.insideUnitSphere * 10) + this.transform.position;
 				if (tmp.x > MaxPos)
 					tmp.x = MaxPos;
 				else if (tmp.x < MinPos)

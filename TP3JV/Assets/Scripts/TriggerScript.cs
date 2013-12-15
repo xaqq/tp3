@@ -16,13 +16,23 @@ public class TriggerScript : MonoBehaviour {
 	}
 	
 	void OnTriggerEnter(Collider target) {
-		if (target.CompareTag("Ressource"))
+		if (target.CompareTag("Ressource") && Agent.Attacker == null)
 		{
 			Agent.SwitchTo(Commands.MOVETORESSOURCE);
 			Agent.SetTarget(target.transform);
 			print (target.transform.position);
 		}
-		else if (target.gameObject.CompareTag("Faction_1") || target.gameObject.CompareTag("Faction_2"))
+		if ((target.CompareTag("Faction_1") && Agent.CompareTag("Faction_2")) ||
+			(Agent.CompareTag("Faction_1") && target.CompareTag("Faction_2")))
+		{
+			SoldierScript soldier = target.GetComponent<SoldierScript>();
+			if (soldier && soldier.GetTarget() == Agent.transform)
+			{
+				Agent.Attacker = soldier;
+				Agent.SwitchTo(Commands.FLEE);
+			}
+		}
+		if (target.gameObject.CompareTag("Faction_1") || target.gameObject.CompareTag("Faction_2"))
 		{
 			Agent.MySociety.AddPotentialCollision();
 		}
@@ -33,7 +43,12 @@ public class TriggerScript : MonoBehaviour {
 		{
 			print("Not in range anymore");
 		}
-		else if (target.gameObject.CompareTag("Faction_1") || target.gameObject.CompareTag("Faction_2"))
+			if (Agent.Attacker == target.GetComponent<SoldierScript>())
+			{
+				Agent.Attacker = null;
+				Agent.SwitchTo(Commands.MOVE);
+			}
+		if (target.gameObject.CompareTag("Faction_1") || target.gameObject.CompareTag("Faction_2"))
 		{
 			Agent.MySociety.RemovePotentialCollision();
 		}
