@@ -5,11 +5,15 @@ public class SocietyHandler : MonoBehaviour {
 	
 	private int NumberOfAgent;
 	private int NumberOfResources;
+	private int NumberOfCollisions;
+	private int NumberOfPotentialCollisions;
 	public int SocietyNumber;
 	
 	// Use this for initialization
 	void Start () {
 		NumberOfResources = 0;
+		NumberOfCollisions = 0;
+		NumberOfPotentialCollisions = 0;
 	}
 	
 	public void InitAgents (int _number) {
@@ -30,6 +34,11 @@ public class SocietyHandler : MonoBehaviour {
 		
 	}
 	
+	public int GetNumberOfAgent()
+	{
+		return NumberOfAgent;
+	}
+	
 	public void SetNumberOfResources(int qte)
 	{
 		NumberOfResources = qte;
@@ -45,6 +54,32 @@ public class SocietyHandler : MonoBehaviour {
 	{
 		NumberOfAgent--;
 	}
+	
+	public void AddCollision()
+	{
+		NumberOfCollisions++;
+	}
+	public void RemoveCollision()
+	{
+		NumberOfCollisions--;
+	}
+	public int GetNumberOfCollisions()
+	{
+		return NumberOfCollisions;
+	}
+	public void AddPotentialCollision()
+	{
+		NumberOfPotentialCollisions++;
+	}
+	public void RemovePotentialCollision()
+	{
+		NumberOfPotentialCollisions--;
+	}
+	public int GetNumberOfPotentialCollisions()
+	{
+		return NumberOfPotentialCollisions;
+	}
+	
 	
 	// Update is called once per frame
 	void Update () {

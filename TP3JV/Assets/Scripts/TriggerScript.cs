@@ -22,12 +22,20 @@ public class TriggerScript : MonoBehaviour {
 			Agent.SetTarget(target.transform);
 			print (target.transform.position);
 		}
+		else if (target.gameObject.CompareTag("Faction_1") || target.gameObject.CompareTag("Faction_2"))
+		{
+			Agent.MySociety.AddPotentialCollision();
+		}
     }
 	
 	void OnTriggerExit(Collider target) {
 		if (target.CompareTag("Ressource"))
 		{
 			print("Not in range anymore");
+		}
+		else if (target.gameObject.CompareTag("Faction_1") || target.gameObject.CompareTag("Faction_2"))
+		{
+			Agent.MySociety.RemovePotentialCollision();
 		}
     }
 }

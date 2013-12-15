@@ -6,7 +6,7 @@ public enum Commands {MOVE, MOVETORESSOURCE, COLLECT, ATTACK, CHASE};
 public class AIScript : MonoBehaviour {
 	
 	protected Commands CurrentCommand;
-	protected SocietyHandler MySociety;
+	public SocietyHandler MySociety;
 	protected AICommand CurrObject;
 	protected Transform Target;
 	private int Level = 1;
@@ -176,9 +176,16 @@ public class AIScript : MonoBehaviour {
 		{
 			SwitchTo (Commands.COLLECT);
 		}
-		else
+		else if (collision.gameObject.CompareTag("Faction_1") || collision.gameObject.CompareTag("Faction_2"))
 		{
-			//print("PAS UNE RESSOURCE");
+			MySociety.AddCollision();
+		}
+	}
+	
+	void OnCollisionExit(Collision collision) {
+		if (collision.gameObject.CompareTag("Faction_1") || collision.gameObject.CompareTag("Faction_2"))
+		{
+			MySociety.RemoveCollision();
 		}
 	}
 }

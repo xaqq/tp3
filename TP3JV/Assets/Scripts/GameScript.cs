@@ -14,6 +14,9 @@ public class GameScript : MonoBehaviour {
 		System.Random rdn = new System.Random();
 		Vector3 _randomPos = new Vector3(0,0.5f,0);
 		
+		Society1.InitAgents(NumberOfAgent);
+		Society2.InitAgents(NumberOfAgent);
+		
 		for (int i = 0; i < NumberOfResources; i++)
 		{
 			_newResource = (GameObject)GameObject.Instantiate(Resources.Load("Prefabs/Resource1"));
@@ -21,8 +24,6 @@ public class GameScript : MonoBehaviour {
 			_randomPos.z = rdn.Next (-50, 50);
 			_newResource.transform.position = _randomPos;
 		}
-		Society1.InitAgents(NumberOfAgent);
-		Society2.InitAgents(NumberOfAgent);
 	}
 	
 	void win(int team)
