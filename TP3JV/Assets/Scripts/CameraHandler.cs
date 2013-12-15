@@ -21,15 +21,18 @@ public class CameraHandler : MonoBehaviour {
 		FIRST_PERSON,
 		THIRD_PERSON
 	};
-	public Camera_Mode CameraMode = Camera_Mode.ORTHOGRAPHIC; 
+	public Camera_Mode CameraMode = Camera_Mode.ORTHOGRAPHIC;
+
+	private Camera _cam; 
 	
 	// Use this for initialization
 	void Start () {
-
+		_cam = GetComponent<Camera>();
 	}
 	
 	void UpdateOrthographic()
 	{
+		_cam.fieldOfView = 60;
 		transform.position = new Vector3(0, 88, 0);
 		transform.LookAt(Vector3.zero);
 	}
@@ -45,6 +48,7 @@ public class CameraHandler : MonoBehaviour {
 
 	void UpdateFirstPerson()
 	{
+		_cam.fieldOfView = 60;
 		if (Camera_Target != null)
 		{
 			transform.position = Camera_Target.transform.position + new Vector3(0, Hauteur_FirstPerson, 0);
@@ -67,12 +71,20 @@ public class CameraHandler : MonoBehaviour {
 
 	void eventHandling()
 	{
-		if ((CameraMode == Camera_Mode.PERSPECTIVE || CameraMode == Camera_Mode.THIRD_PERSON) && Input.GetAxis("Fire2") > 0)
+		if ((CameraMode == Camera_Mode.PERSPECTIVE || CameraMode == Camera_Mode.THIRD_PERSON))
 		{
+			if (Input.GetAxis("Fire2") > 0)
+			{
 			float h = Input.GetAxis("Mouse X");
 			float v = Input.GetAxis("Mouse Y");
 			transform.Rotate(-v * Vertical_Sensibility, 0, 0);
 			transform.RotateAround(Vector3.zero, Vector3.up, h * Horizontal_Sensibility);
+			}
+			_cam.fov += Input.GetAxis("Mouse ScrollWheel");
+			if (_cam.fov >= 70)
+				_cam.fov = 70;
+			if (_cam.fov <= 10)
+				_cam.fov = 10;
 		}
 	}
 
