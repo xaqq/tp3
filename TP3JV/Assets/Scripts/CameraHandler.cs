@@ -6,6 +6,8 @@ public class CameraHandler : MonoBehaviour {
 	bool PanelOpen = false;
 	public TweenRotation ArrowTween;
 	public TweenPosition PanelTween;
+	bool InterfaceOpen = false;
+	public TweenPosition InterfaceTween;
 	public float Hauteur_Perspective = 10;
 	public float Hauteur_FirstPerson = 0;
 	public float Offset_FirstPerson = 0.5f;
@@ -111,6 +113,45 @@ public class CameraHandler : MonoBehaviour {
 			ArrowTween.Play(true);
 			PanelTween.Play(true);
 			PanelOpen = true;
+			
+		}
+	}
+	
+	void SwitchToFirst()
+	{
+		if (CameraMode != Camera_Mode.FIRST_PERSON)
+			CameraMode = Camera_Mode.FIRST_PERSON;
+	}
+	
+	void SwitchToThird()
+	{
+		if (CameraMode != Camera_Mode.THIRD_PERSON)
+			CameraMode = Camera_Mode.THIRD_PERSON;
+	}
+	
+	void SwitchToOrtho()
+	{
+		if (CameraMode != Camera_Mode.ORTHOGRAPHIC)
+			CameraMode = Camera_Mode.ORTHOGRAPHIC;
+	}
+	
+	void SwitchToPersp()
+	{
+		if (CameraMode != Camera_Mode.PERSPECTIVE)
+			CameraMode = Camera_Mode.PERSPECTIVE;
+	}
+	
+	void SwitchToInterface()
+	{
+		if (InterfaceOpen)
+		{
+			InterfaceTween.Play(false);
+			InterfaceOpen = false;
+		}
+		else
+		{
+			InterfaceTween.Play(true);
+			InterfaceOpen = true;
 			
 		}
 	}
