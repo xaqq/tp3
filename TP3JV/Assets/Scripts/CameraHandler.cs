@@ -22,7 +22,10 @@ public class CameraHandler : MonoBehaviour {
 		THIRD_PERSON
 	};
 	public Camera_Mode CameraMode = Camera_Mode.ORTHOGRAPHIC;
-
+	
+	int unitNumber = 0;
+	int prevUnitNumber = -1;
+	
 	private Camera _cam; 
 	
 	// Use this for initialization
@@ -85,7 +88,31 @@ public class CameraHandler : MonoBehaviour {
 				_cam.fov = 70;
 			if (_cam.fov <= 10)
 				_cam.fov = 10;
+			if (Input.GetAxis("Horizontal") > 0.1)
+			{
+			   unitNumber = (unitNumber + 1) % GameObject.Find("Society1").GetComponent<SocietyHandler>().GetNumberOfAgent();	
+		       updateTarget();				
+			}
+			else if (Input.GetAxis("Horizontal") < -0.1)
+			{
+				unitNumber = (unitNumber - 1) % GameObject.Find("Society1").GetComponent<SocietyHandler>().GetNumberOfAgent();
+		        updateTarget();				
+			}
 		}
+	}
+	
+	private void updateTarget()
+	{
+		int count = 0;
+		foreach (GameObject o in GameObject.FindGameObjectsWithTag("Faction_1"))
+		{
+			if (count == unitNumber)
+			{
+				Camera_Target = o ;
+		return ;
+			}
+			count++;
+			}
 	}
 
 	// Update is called once per frame
@@ -93,6 +120,7 @@ public class CameraHandler : MonoBehaviour {
 	{
 		eventHandling();
 		Screen.lockCursor = false;
+		
 		switch (CameraMode)
 		{
 			case Camera_Mode.ORTHOGRAPHIC:
