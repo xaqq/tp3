@@ -14,7 +14,7 @@ public class CameraHandler : MonoBehaviour {
 	public float Hauteur_ThirdPerson = 4;
 	public float Vertical_Sensibility = 1;
 	public float Horizontal_Sensibility = 1;
-	public GameObject Camera_Target;
+	private GameObject Camera_Target;
 	public enum Camera_Mode {
 		ORTHOGRAPHIC,
 		PERSPECTIVE,
@@ -120,7 +120,8 @@ public class CameraHandler : MonoBehaviour {
 	{
 		eventHandling();
 		Screen.lockCursor = false;
-		
+		if (!Camera_Target)
+			updateTarget();
 		switch (CameraMode)
 		{
 			case Camera_Mode.ORTHOGRAPHIC:
