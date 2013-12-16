@@ -7,7 +7,6 @@ public class GameScript : MonoBehaviour {
 	public int NumberOfResources = 5;
 	public SocietyHandler Society1;
 	public SocietyHandler Society2;
-	private bool Over = false;
 	// Use this for initialization
 	void Start () {
 		GameObject _newResource;
@@ -28,8 +27,8 @@ public class GameScript : MonoBehaviour {
 	
 	void win(int team)
 	{
-		Over = true;
-		print ("Team " + team + " won !");
+		PlayerPrefs.SetInt ("team", team);
+		Application.LoadLevel("End");
 	}
 	
 	// Update is called once per frame
