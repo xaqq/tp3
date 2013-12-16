@@ -16,11 +16,10 @@ public class TriggerScript : MonoBehaviour {
 	}
 	
 	void OnTriggerEnter(Collider target) {
-		if (target.CompareTag("Ressource") && Agent.Attacker == null)
+		if (target.CompareTag("Ressource") && Agent.Attacker == null && Agent.CurrentCommand != Commands.MOVETOFORUM)
 		{
 			Agent.SwitchTo(Commands.MOVETORESSOURCE);
 			Agent.SetTarget(target.transform);
-			print (target.transform.position);
 		}
 		if ((target.CompareTag("Faction_1") && Agent.CompareTag("Faction_2")) ||
 			(Agent.CompareTag("Faction_1") && target.CompareTag("Faction_2")))
@@ -41,7 +40,6 @@ public class TriggerScript : MonoBehaviour {
 	void OnTriggerExit(Collider target) {
 		if (target.CompareTag("Ressource"))
 		{
-			print("Not in range anymore");
 		}
 			if (Agent.Attacker && Agent.Attacker == target.GetComponent<SoldierScript>())
 			{

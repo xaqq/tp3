@@ -32,9 +32,8 @@ public class AICommand_Collect : AICommand {
 		{
 			int unitCollectQt = 1 * AiComponent.GetLevel();
 			int qt = target.collect(unitCollectQt);
-			AiComponent.AddRessource(qt);
+			AiComponent.AddRessource();
 			AiComponent.AddExperience(qt);
-			print ("Collected " + qt + " resources. Now has "+ AiComponent.GetRessourceQuantity());
 			if (qt < unitCollectQt)
 				HasCompleted = true;
 		}

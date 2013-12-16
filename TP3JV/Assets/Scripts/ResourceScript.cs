@@ -7,7 +7,6 @@ public class ResourceScript : MonoBehaviour
 	
 	public int collect (int qt)
 	{
-		print ("Has " + Quantity + " available");
 		if (qt < Quantity) {
 			Quantity -= qt;
 			return qt;
@@ -39,7 +38,6 @@ public class ResourceScript : MonoBehaviour
 	void Update ()
 	{
 		if (Quantity == 0) {
-			print ("Im a dead resource");
 			
 			SpawnNewResource ();
 			

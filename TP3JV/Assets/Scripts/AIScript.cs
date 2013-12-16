@@ -1,11 +1,11 @@
 ﻿using UnityEngine;
 using System.Collections;
 
-public enum Commands {MOVE, MOVETORESSOURCE, COLLECT, ATTACK, CHASE, FLEE};
+public enum Commands {MOVE, MOVETORESSOURCE, MOVETOFORUM, COLLECT, ATTACK, CHASE, FLEE};
 
 public class AIScript : MonoBehaviour {
 	
-	protected Commands CurrentCommand;
+	public Commands CurrentCommand;
 	public SocietyHandler MySociety;
 	protected AICommand CurrObject;
 	protected Transform Target;
@@ -17,7 +17,7 @@ public class AIScript : MonoBehaviour {
 	public int MaxPos;
 	
 	
-	private int RessourceQuantity = 0;
+	private bool HasResource = false;
 	
 	// Use this for initialization
 	void Start () {
@@ -30,7 +30,6 @@ public class AIScript : MonoBehaviour {
 	}
 	public void SetSociety(SocietyHandler _society)
 	{
-		print (_society.gameObject.name);
 		MySociety = _society;
 	}
 	
@@ -54,7 +53,6 @@ public class AIScript : MonoBehaviour {
 		Level += l;
 		if (MySociety)
 			MySociety.UnitLeveledUp(this);
-		print ("Level up !");
 	}
 	
 	public int GetExperience()
@@ -66,7 +64,6 @@ public class AIScript : MonoBehaviour {
 	{
 		Experience += qt;
 		
-		print ("Current xp = " + Experience);
 		if ((Level == 1 && Experience > 3) ||
 			(Level == 2 && Experience > 10))
 			AddLevel(1);
@@ -104,6 +101,16 @@ public class AIScript : MonoBehaviour {
 				CurrObject.StartExecute(tmp);
 			}
 			break;
+		case Commands.MOVETOFORUM:
+			if (this.gameObject.GetComponent("AICommand") == null)
+			{
+				this.gameObject.AddComponent("AICommand_MoveTo");
+				CurrObject = this.gameObject.GetComponent<AICommand>();
+				Vector3 tmp = MySociety.transform.position;
+				tmp.y = this.transform.position.y;
+				CurrObject.StartExecute(tmp);
+			}
+			break;
 		case Commands.COLLECT:
 			if (this.gameObject.GetComponent("AICommand") == null)
 			{
@@ -129,7 +136,6 @@ public class AIScript : MonoBehaviour {
 	void Update () {
 		if (this.GetHealth() <= 0)
 		{
-			print ("Im dead :(");
 			Destroy(this.gameObject);
 			MySociety.AgentDead();
 			return;
@@ -142,6 +148,8 @@ public class AIScript : MonoBehaviour {
 				if (CurrentCommand == Commands.MOVETORESSOURCE)
 					CurrentCommand = Commands.COLLECT;
 				else if (CurrentCommand == Commands.COLLECT)
+					CurrentCommand = Commands.MOVETOFORUM;
+				else if (CurrentCommand == Commands.MOVETOFORUM)
 					CurrentCommand = Commands.MOVE;
 				GameObject.Destroy(CurrObject);
 			}
@@ -152,15 +160,23 @@ public class AIScript : MonoBehaviour {
 		}
 	}
 	
-	public int GetRessourceQuantity()
+	public bool AgentHasResource()
 	{
-		return RessourceQuantity;
+		return HasResource;
 	}
 	
-	public void AddRessource(int qt)
+	public void AddRessource()
 	{
-		RessourceQuantity += qt;
-		MySociety.AddResources(qt);
+		HasResource = true;
+	}
+	
+	public void GiveResourceToForum()
+	{
+		if (HasResource)
+		{
+			HasResource = false;
+			MySociety.AddResources(1);
+		}
 	}
 	
 	

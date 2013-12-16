@@ -2,13 +2,12 @@
 using System.Collections.Generic;
 
 public class SocietyHandler : MonoBehaviour {
-	private int CurrentRessource;
 	private int NumberOfAgent;
 	private int NumberOfResources;
 	private int NumberOfCollisions;
 	private int NumberOfPotentialCollisions;
 	public int SocietyNumber;
-	public int SoldierRatioTreshold = 30;
+	private float SoldierRatioTreshold = 0.2f;
 		
 	private List<AIScript> LevelUpUnits = new List<AIScript>(); // units who level-up prev frame
 	
@@ -17,7 +16,6 @@ public class SocietyHandler : MonoBehaviour {
 		NumberOfResources = 0;
 		NumberOfCollisions = 0;
 		NumberOfPotentialCollisions = 0;
-		CurrentRessource = 0;
 	}
 	
 	public void InitAgents (int _number) {
@@ -36,6 +34,11 @@ public class SocietyHandler : MonoBehaviour {
 			_tmpScript.SetSociety(this);
 		}
 		
+	}
+	
+	public int GetNumberOfResource()
+	{
+		return NumberOfResources;
 	}
 	
 	private void CreateAgent()
@@ -72,8 +75,6 @@ public class SocietyHandler : MonoBehaviour {
 	public void AddResources(int qte)
 	{
 		NumberOfResources += qte;
-		CurrentRessource += qte;
-		print ("I AM SOCIETY " + SocietyNumber.ToString() + " AND I HAVE " + NumberOfResources.ToString() + " RESOURCES");
 	}
 	
 	public void AgentDead()
@@ -107,10 +108,10 @@ public class SocietyHandler : MonoBehaviour {
 	}
 	
 	
-	private int countMySoldier()
+	private float countMySoldier()
 	{
 		int count = 0;
-		if (this.gameObject.CompareTag("Faction_1"))
+		if (SocietyNumber == 1)
 		{
 			foreach (GameObject o in GameObject.FindGameObjectsWithTag("Faction_1"))
 			{
@@ -119,7 +120,7 @@ public class SocietyHandler : MonoBehaviour {
 			}
 			return count;
 		}
-				if (this.gameObject.CompareTag("Faction_2"))
+		if (SocietyNumber == 2)
 		{
 			foreach (GameObject o in GameObject.FindGameObjectsWithTag("Faction_2"))
 			{
@@ -133,16 +134,15 @@ public class SocietyHandler : MonoBehaviour {
 	
 	private AIScript pickRandomAgent()
 	{
-		if (this.gameObject.CompareTag("Faction_1"))
+		if (SocietyNumber == 1)
 		{
 			foreach (GameObject o in GameObject.FindGameObjectsWithTag("Faction_1"))
 			{
-
 				if (o.GetComponent<SoldierScript>() == null && o != this.gameObject)
 					return o.GetComponent<AIScript>();
 			}
 		}
-				if (this.gameObject.CompareTag("Faction_2"))
+		if (SocietyNumber == 2)
 		{
 			foreach (GameObject o in GameObject.FindGameObjectsWithTag("Faction_2"))
 			{
@@ -156,28 +156,56 @@ public class SocietyHandler : MonoBehaviour {
 	// Update is called once per frame
 	void Update () {
 		
-		while (CurrentRessource >= 5)
+		while (NumberOfResources >= 5)
 		{
-			if (countMySoldier() / ( NumberOfAgent == 0 ? 1 : NumberOfAgent) < SoldierRatioTreshold)
+			if ((float)(countMySoldier() / ((float)NumberOfAgent)) < SoldierRatioTreshold)
 			{
 				AIScript agent = pickRandomAgent();
 				if (agent)
-				{					
-				//  becomes a level 1 soldier
-				AIScript go = agent.gameObject.GetComponent<AIScript>();
-				SoldierScript temp = (agent.gameObject.AddComponent("SoldierScript") as SoldierScript);
-				temp.MinPos = -50;
-				temp.MaxPos = 50;
-				temp.SetSociety(this);
-				temp.GetComponentInChildren<TriggerScript>().Agent = temp;
-			    GameObject.DestroyImmediate(go);
+				{
+					//  becomes a level 1 soldier
+					AIScript go = agent.gameObject.GetComponent<AIScript>();
+					SoldierScript temp = (agent.gameObject.AddComponent("SoldierScript") as SoldierScript);
+					temp.MinPos = -50;
+					temp.MaxPos = 50;
+					temp.SetSociety(this);
+					GameObject child = temp.GetComponentInChildren<TriggerScript>().gameObject;
+					Destroy (child.GetComponent<TriggerScript>());
+					child.AddComponent<SoldierTriggerScript>();
+					child.GetComponentInChildren<SoldierTriggerScript>().Agent = temp;
+					Material mat;
+					if (SocietyNumber == 1)
+						mat = Resources.Load("Textures/Misc/Materials/GreenSoldier", typeof(Material)) as Material;
+					else
+						mat = Resources.Load("Textures/Misc/Materials/BlackSoldier", typeof(Material)) as Material;
+					temp.renderer.material = mat;
+			    	GameObject.DestroyImmediate(go);
 				}
 			}
 			else{
 				CreateAgent();
 			}
-			CurrentRessource -= 5;
+			NumberOfResources -= 5;
 		}
 		LevelUpUnits.Clear();
+	}
+	
+	void OnTriggerEnter(Collider target) {
+		if (target.CompareTag("Faction_" + SocietyNumber))
+		{
+			if (target.gameObject.GetComponent<AIScript>() != null)
+			{
+				AIScript tmp = target.gameObject.GetComponent<AIScript>();
+				if (tmp.AgentHasResource())
+				{
+					tmp.GiveResourceToForum();
+					if (tmp.gameObject.GetComponent("AICommand") != null)
+					{
+						AICommand tmp2 = tmp.gameObject.GetComponent<AICommand>();
+						tmp2.HasCompleted = true;
+					}
+				}
+			}
+		}
 	}
 }
