@@ -22,6 +22,8 @@ public class CameraHandler : MonoBehaviour {
 		THIRD_PERSON
 	};
 	public Camera_Mode CameraMode = Camera_Mode.ORTHOGRAPHIC;
+	public SocietyHandler Society1;
+	
 	
 	int unitNumber = 0;
 	int prevUnitNumber = -1;
@@ -88,14 +90,19 @@ public class CameraHandler : MonoBehaviour {
 				_cam.fov = 70;
 			if (_cam.fov <= 10)
 				_cam.fov = 10;
-			if (Input.GetAxis("Horizontal") > 0.1)
+		}
+		if ((CameraMode == Camera_Mode.FIRST_PERSON || CameraMode == Camera_Mode.THIRD_PERSON))
+		{
+			if (Input.GetKeyDown(KeyCode.RightArrow))
 			{
-			   unitNumber = (unitNumber + 1) % GameObject.Find("Society1").GetComponent<SocietyHandler>().GetNumberOfAgent();	
+			   unitNumber = (unitNumber + 1) % Society1.GetComponent<SocietyHandler>().GetNumberOfAgent();	
 		       updateTarget();				
 			}
-			else if (Input.GetAxis("Horizontal") < -0.1)
+			else if (Input.GetKeyDown(KeyCode.LeftArrow))
 			{
-				unitNumber = (unitNumber - 1) % GameObject.Find("Society1").GetComponent<SocietyHandler>().GetNumberOfAgent();
+				if (unitNumber <= 0)
+					unitNumber = Society1.GetComponent<SocietyHandler>().GetNumberOfAgent();
+				unitNumber = (unitNumber - 1) % Society1.GetComponent<SocietyHandler>().GetNumberOfAgent();
 		        updateTarget();				
 			}
 		}
