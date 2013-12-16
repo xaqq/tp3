@@ -7,12 +7,15 @@ public class SocietyHandler : MonoBehaviour {
 	private int NumberOfCollisions;
 	private int NumberOfPotentialCollisions;
 	public int SocietyNumber;
+	public GameObject Panel;
+	private bool PanelOpen;
 	private float SoldierRatioTreshold = 0.2f;
 		
 	private List<AIScript> LevelUpUnits = new List<AIScript>(); // units who level-up prev frame
 	
 	// Use this for initialization
-	void Start () {		
+	void Start () {	
+		PanelOpen = false;
 		NumberOfResources = 0;
 		NumberOfCollisions = 0;
 		NumberOfPotentialCollisions = 0;
@@ -155,39 +158,85 @@ public class SocietyHandler : MonoBehaviour {
 	
 	// Update is called once per frame
 	void Update () {
-		
-		while (NumberOfResources >= 5)
+		if (SocietyNumber == 2)
 		{
-			if ((float)(countMySoldier() / ((float)NumberOfAgent)) < SoldierRatioTreshold)
+			while (NumberOfResources >= 5)
 			{
-				AIScript agent = pickRandomAgent();
-				if (agent)
+				if ((float)(countMySoldier() / ((float)NumberOfAgent)) < SoldierRatioTreshold)
 				{
-					//  becomes a level 1 soldier
-					AIScript go = agent.gameObject.GetComponent<AIScript>();
-					SoldierScript temp = (agent.gameObject.AddComponent("SoldierScript") as SoldierScript);
-					temp.MinPos = -50;
-					temp.MaxPos = 50;
-					temp.SetSociety(this);
-					GameObject child = temp.GetComponentInChildren<TriggerScript>().gameObject;
-					Destroy (child.GetComponent<TriggerScript>());
-					child.AddComponent<SoldierTriggerScript>();
-					child.GetComponentInChildren<SoldierTriggerScript>().Agent = temp;
-					Material mat;
-					if (SocietyNumber == 1)
-						mat = Resources.Load("Textures/Misc/Materials/GreenSoldier", typeof(Material)) as Material;
-					else
-						mat = Resources.Load("Textures/Misc/Materials/BlackSoldier", typeof(Material)) as Material;
-					temp.renderer.material = mat;
-			    	GameObject.DestroyImmediate(go);
+					AIScript agent = pickRandomAgent();
+					if (agent)
+					{
+						//  becomes a level 1 soldier
+						AIScript go = agent.gameObject.GetComponent<AIScript>();
+						SoldierScript temp = (agent.gameObject.AddComponent("SoldierScript") as SoldierScript);
+						temp.MinPos = -50;
+						temp.MaxPos = 50;
+						temp.SetSociety(this);
+						GameObject child = temp.GetComponentInChildren<TriggerScript>().gameObject;
+						Destroy (child.GetComponent<TriggerScript>());
+						child.AddComponent<SoldierTriggerScript>();
+						child.GetComponentInChildren<SoldierTriggerScript>().Agent = temp;
+						Material mat;
+						if (SocietyNumber == 1)
+							mat = Resources.Load("Textures/Misc/Materials/GreenSoldier", typeof(Material)) as Material;
+						else
+							mat = Resources.Load("Textures/Misc/Materials/BlackSoldier", typeof(Material)) as Material;
+						temp.renderer.material = mat;
+				    	GameObject.DestroyImmediate(go);
+					}
 				}
+				else{
+					CreateAgent();
+				}
+				NumberOfResources -= 5;
 			}
-			else{
-				CreateAgent();
+		}
+		else
+		{
+			if (NumberOfResources >= 5 && PanelOpen == false)
+			{
+				Panel.SetActive(true);
+				PanelOpen = true;
 			}
-			NumberOfResources -= 5;
 		}
 		LevelUpUnits.Clear();
+	}
+	
+	void ButtonAgent()
+	{
+		CreateAgent();
+		Panel.SetActive(false);
+		PanelOpen = false;
+		NumberOfResources -= 5;
+	}
+	
+	void ButtonSoldier()
+	{
+		AIScript agent = pickRandomAgent();
+		if (agent)
+		{
+		//  becomes a level 1 soldier
+			AIScript go = agent.gameObject.GetComponent<AIScript>();
+			SoldierScript temp = (agent.gameObject.AddComponent("SoldierScript") as SoldierScript);
+			temp.MinPos = -50;
+			temp.MaxPos = 50;
+			temp.SetSociety(this);
+			GameObject child = temp.GetComponentInChildren<TriggerScript>().gameObject;
+			Destroy (child.GetComponent<TriggerScript>());
+			child.AddComponent<SoldierTriggerScript>();
+			child.GetComponentInChildren<SoldierTriggerScript>().Agent = temp;
+			Material mat;
+			if (SocietyNumber == 1)
+				mat = Resources.Load("Textures/Misc/Materials/GreenSoldier", typeof(Material)) as Material;
+			else
+				mat = Resources.Load("Textures/Misc/Materials/BlackSoldier", typeof(Material)) as Material;
+			temp.renderer.material = mat;
+		   	GameObject.DestroyImmediate(go);
+		}
+		Panel.SetActive(false);
+		PanelOpen = false;
+		NumberOfResources -= 5;
 	}
 	
 	void OnTriggerEnter(Collider target) {
