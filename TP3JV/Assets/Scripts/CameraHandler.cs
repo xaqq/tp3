@@ -85,7 +85,7 @@ public class CameraHandler : MonoBehaviour {
 			transform.Rotate(-v * Vertical_Sensibility, 0, 0);
 			transform.RotateAround(Vector3.zero, Vector3.up, h * Horizontal_Sensibility);
 			}
-			_cam.fov += Input.GetAxis("Mouse ScrollWheel");
+			_cam.fov += Input.GetAxis("Mouse ScrollWheel") * 100;
 			if (_cam.fov >= 70)
 				_cam.fov = 70;
 			if (_cam.fov <= 10)
